@@ -88,10 +88,17 @@ assert_contains "$M" 'try { event = new JSONObject(encoded); } catch (Exception 
 
 assert_contains "$MANIFEST" 'package="com.airsim.phonecontrol.standalone"' \
   'standalone package id is missing'
-assert_contains "$MANIFEST" 'android:versionCode="128"' \
-  'standalone version code does not match the current candidate build'
-assert_contains "$MANIFEST" 'android:versionName="0.9.8.23"' \
-  'standalone version name does not match the current Android candidate'
+SHARED_MANIFEST="$ROOT/../android/phone-control-app/AndroidManifest.xml"
+CANDIDATE_CODE=$(sed -n 's/.*android:versionCode="\([0-9]*\)".*/\1/p' "$SHARED_MANIFEST" | head -n 1)
+CANDIDATE_NAME=$(sed -n 's/.*android:versionName="\([^"]*\)".*/\1/p' "$SHARED_MANIFEST" | head -n 1)
+if [ -z "$CANDIDATE_CODE" ] || [ -z "$CANDIDATE_NAME" ]; then
+  echo "FAIL: shared Android manifest version is missing" >&2
+  exit 1
+fi
+assert_contains "$MANIFEST" "android:versionCode=\"$CANDIDATE_CODE\"" \
+  'standalone version code does not match the shared Android candidate build'
+assert_contains "$MANIFEST" "android:versionName=\"$CANDIDATE_NAME\"" \
+  'standalone version name does not match the shared Android candidate'
 assert_contains "$MANIFEST" 'com.airsim.phonecontrol.STANDALONE_AGENT' \
   'standalone runtime flag is missing'
 assert_contains "$MANIFEST" 'com.airsim.phonecontrol.StandaloneAgentService' \
