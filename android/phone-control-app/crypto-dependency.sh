@@ -8,7 +8,7 @@ if [ ! -f "$AIRSIM_CRYPTO_JAR" ]; then
     https://repo.maven.apache.org/maven2/org/bouncycastle/bcprov-jdk15to18/1.84/bcprov-jdk15to18-1.84.jar \
     -o "$AIRSIM_CRYPTO_JAR"
 fi
-if [ "$(shasum -a 256 "$AIRSIM_CRYPTO_JAR" | awk '{print $1}')" != \
+if [ "$({ sha256sum "$AIRSIM_CRYPTO_JAR" 2>/dev/null || shasum -a 256 "$AIRSIM_CRYPTO_JAR"; } | awk '{print $1}')" != \
   a30777eebbd44aa1713c14ee04547de1df63ef3e383e910ed210e1d0f2c2ef92 ]; then
   echo 'Bouncy Castle dependency checksum mismatch' >&2
   exit 1

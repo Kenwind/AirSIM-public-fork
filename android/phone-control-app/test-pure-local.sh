@@ -10,7 +10,7 @@ if [ ! -f "$JSON_JAR" ]; then
   mkdir -p "$ROOT/build/dependencies"
   curl -fsSL https://repo.maven.apache.org/maven2/org/json/json/20240303/json-20240303.jar -o "$JSON_JAR"
 fi
-test "$(shasum -a 256 "$JSON_JAR" | awk '{print $1}')" = 3cf6cd6892e32e2b4c1c39e0f52f5248a2f5b37646fdfbb79a66b46b618414ed
+test "$({ sha256sum "$JSON_JAR" 2>/dev/null || shasum -a 256 "$JSON_JAR"; } | awk '{print $1}')" = 3cf6cd6892e32e2b4c1c39e0f52f5248a2f5b37646fdfbb79a66b46b618414ed
 mkdir -p "$OUT"
 "$TASK_JAVA_HOME/bin/javac" --release 17 -cp "$CRYPTO:$JSON_JAR" -d "$OUT" \
   "$ROOT/src/com/airsim/phonecontrol/StandaloneRelayClient.java" \

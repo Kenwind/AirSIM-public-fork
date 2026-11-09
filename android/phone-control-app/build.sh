@@ -31,7 +31,7 @@ download_verified() {
   local expected=$3
   if [ ! -f "$output" ]; then curl -fsSL "$url" -o "$output"; fi
   local actual
-  actual=$(shasum -a 256 "$output" | awk '{print $1}')
+  actual=$({ sha256sum "$output" 2>/dev/null || shasum -a 256 "$output"; } | awk '{print $1}')
   if [ "$actual" != "$expected" ]; then
     echo "dependency checksum mismatch: $output" >&2
     exit 1

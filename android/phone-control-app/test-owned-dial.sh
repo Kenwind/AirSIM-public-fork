@@ -12,7 +12,7 @@ mkdir -p "$OUT" "$ROOT/build/dependencies"
 if [ ! -f "$JSON_JAR" ]; then
   curl -fsSL https://repo.maven.apache.org/maven2/org/json/json/20240303/json-20240303.jar -o "$JSON_JAR"
 fi
-test "$(shasum -a 256 "$JSON_JAR" | awk '{print $1}')" = 3cf6cd6892e32e2b4c1c39e0f52f5248a2f5b37646fdfbb79a66b46b618414ed
+test "$({ sha256sum "$JSON_JAR" 2>/dev/null || shasum -a 256 "$JSON_JAR"; } | awk '{print $1}')" = 3cf6cd6892e32e2b4c1c39e0f52f5248a2f5b37646fdfbb79a66b46b618414ed
 "$TASK_JAVA_HOME/bin/javac" --release 17 -cp "$JSON_JAR:$BUILT:$BASE:$ANDROID_JAR" -d "$OUT" \
   "$ROOT"/test/owned-dial/com/airsim/phonecontrol/*.java \
   "$ROOT"/test/pcm/com/airsim/phonecontrol/VoWLANPairingStore.java \

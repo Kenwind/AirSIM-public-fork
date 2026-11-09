@@ -86,7 +86,7 @@ package="$dist_dir/airsim-avf-agent_${package_version}_arm64.deb"
 if command -v sha256sum >/dev/null 2>&1; then
     (cd "$dist_dir" && sha256sum "$(basename "$package")") > "$package.sha256"
 else
-    digest=$(shasum -a 256 "$package" | awk '{print $1}')
+    digest=$({ sha256sum "$package" 2>/dev/null || shasum -a 256 "$package"; } | awk '{print $1}')
     printf '%s  %s\n' "$digest" "$(basename "$package")" > "$package.sha256"
 fi
 
@@ -122,7 +122,7 @@ chmod 0755 "$dist_dir/rotate-avf-key.sh"
 if command -v sha256sum >/dev/null 2>&1; then
     (cd "$dist_dir" && sha256sum rotate-avf-key.sh) > "$dist_dir/rotate-avf-key.sh.sha256"
 else
-    digest=$(shasum -a 256 "$dist_dir/rotate-avf-key.sh" | awk '{print $1}')
+    digest=$({ sha256sum "$dist_dir/rotate-avf-key.sh" 2>/dev/null || shasum -a 256 "$dist_dir/rotate-avf-key.sh"; } | awk '{print $1}')
     printf '%s  rotate-avf-key.sh\n' "$digest" > "$dist_dir/rotate-avf-key.sh.sha256"
 fi
 

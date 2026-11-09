@@ -44,5 +44,5 @@ find "$SCRIPT_DIR/test-fixtures" -name '*.java' -type f -print | sort | sed 's/.
 JAVA_HOME=$JAVA_HOME "$D8" --min-api 34 --output "$DEX_DIR" "$BUILD_DIR/classes.jar"
 (cd "$DEX_DIR" && zip -q "$OUTPUT_JAR" classes.dex)
 
-HASH=$(shasum -a 256 "$OUTPUT_JAR" | awk '{print $1}')
+HASH=$({ sha256sum "$OUTPUT_JAR" 2>/dev/null || shasum -a 256 "$OUTPUT_JAR"; } | awk '{print $1}')
 printf 'JAR=%s\nSHA256=%s\n' "$OUTPUT_JAR" "$HASH"
